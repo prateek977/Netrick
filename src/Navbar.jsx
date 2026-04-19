@@ -23,7 +23,7 @@ function Navbar({ username }) {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       {/* Left side: Logo */}
       <div className="navbar-logo">
-        NET<span>RICK</span>
+        <span>NET</span>RICK
       </div>
 
       {/* Right side: username + avatar */}

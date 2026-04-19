@@ -1,36 +1,66 @@
-// Home component — the large hero banner at the top of the page
-// Props:
-//   movie : object — the featured movie to display in the banner
-//              { title, subtitle, description, image }
-function Home({ movie }) {
+import Row from "./Row";
+
+// ─────────────────────────────────────────────
+// Home — receives 'data' (array of movies) from App
+// It splits the array into:
+//   • Featured banner → the FIRST item
+//   • "Results" row   → ALL items (including the first)
+// ─────────────────────────────────────────────
+function Home({ data, query, type }) {
+  // Take the very first movie to show in the hero banner
+  const featured = data[0];
+
   return (
-    <div className="home-banner">
-      {/* Background poster image */}
-      <img src={movie.image} alt={movie.title} />
+    <div>
+      {/* ── Hero Banner ── */}
+      {/* Shows the first movie as a full-width featured banner */}
+      <div className="home-banner">
+        {/* Poster image as the background */}
+        <img
+          src={featured.Poster !== "N/A" ? featured.Poster : "https://via.placeholder.com/1200x520?text=No+Image"}
+          alt={featured.Title}
+        />
 
-      {/* Dark gradient overlay so text is readable */}
-      <div className="home-banner-overlay" />
+        {/* Dark gradient so the text is readable on top of the image */}
+        <div className="home-banner-overlay" />
 
-      {/* Text content on top of the image */}
-      <div className="home-banner-content">
-        {/* Small red label tag */}
-        <span className="banner-tag">⭐ Featured</span>
+        {/* Text content overlaid on the image */}
+        <div className="home-banner-content">
+          {/* Small red tags showing type */}
+          <span className="banner-tag">⭐ Featured</span>
 
-        {/* Movie title */}
-        <h1 className="banner-title">{movie.title}</h1>
+          {/* Movie title — comes from API data */}
+          <h1 className="banner-title">{featured.Title}</h1>
 
-        {/* Year + genre line */}
-        <p className="banner-subtitle">{movie.subtitle}</p>
+          {/* Year and type from the API */}
+          <p className="banner-subtitle">
+            {featured.Year} · {featured.Type === "series" ? "TV Series" : "Movie"}
+          </p>
 
-        {/* Short description */}
-        <p className="banner-description">{movie.description}</p>
+          {/* Short description — OMDB search endpoint doesn't give plot,  */}
+          {/* so we show the imdbID as a reference */}
+          <p className="banner-description">
+            IMDB ID: {featured.imdbID} &nbsp;·&nbsp; Showing results for "{query}"
+          </p>
 
-        {/* Action buttons */}
-        <div className="banner-buttons">
-          <button className="btn-play">▶ &nbsp;Play Now</button>
-          <button className="btn-info">ⓘ &nbsp;More Info</button>
+          {/* Buttons */}
+          <div className="banner-buttons">
+            <a href="https://net22.cc/home" className="btn-play" style={{ textDecoration: 'none' }}>▶ &nbsp;Play Now</a>
+            <button className="btn-info">ⓘ &nbsp;More Info</button>
+          </div>
         </div>
       </div>
+
+      {/* ── Results Row ── */}
+      {/*
+        Pass the full 'data' array to Row.
+        Row will loop through each item with .map() and render a Card.
+      */}
+      <Row
+        title={`Search Results for "${query}" (${type === "series" ? "Series" : "Movies"})`}
+        movies={data}
+        layout="grid"
+      />
     </div>
   );
 }
