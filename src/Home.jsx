@@ -1,66 +1,59 @@
 import Row from "./Row";
 
-// ─────────────────────────────────────────────
-// Home — receives 'data' (array of movies) from App
-// It splits the array into:
-//   • Featured banner → the FIRST item
-//   • "Results" row   → ALL items (including the first)
-// ─────────────────────────────────────────────
-function Home({ data, query, type }) {
-  // Take the very first movie to show in the hero banner
-  const featured = data[0];
+function Home({ movies, series, query, activeTab }) {
+
+  const allItems = [...movies, ...series];
+  const randomIndex = Math.floor(Math.random() * allItems.length);
+  const featured = allItems[randomIndex];
+
+  const posterSrc =
+    featured.Poster && featured.Poster !== "N/A"
+      ? featured.Poster
+      : "https://via.placeholder.com/1200x520?text=No+Image";
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      {/* Shows the first movie as a full-width featured banner */}
       <div className="home-banner">
-        {/* Poster image as the background */}
-        <img
-          src={featured.Poster !== "N/A" ? featured.Poster : "https://via.placeholder.com/1200x520?text=No+Image"}
-          alt={featured.Title}
-        />
-
-        {/* Dark gradient so the text is readable on top of the image */}
+        <img src={posterSrc} alt={featured.Title} />
         <div className="home-banner-overlay" />
 
-        {/* Text content overlaid on the image */}
         <div className="home-banner-content">
-          {/* Small red tags showing type */}
-          <span className="banner-tag">⭐ Featured</span>
-
-          {/* Movie title — comes from API data */}
+          <p className="banner-platform">
+            ⭐ {featured.Type === "series" ? "TV SERIES" : "MOVIE"}
+          </p>
           <h1 className="banner-title">{featured.Title}</h1>
-
-          {/* Year and type from the API */}
-          <p className="banner-subtitle">
-            {featured.Year} · {featured.Type === "series" ? "TV Series" : "Movie"}
-          </p>
-
-          {/* Short description — OMDB search endpoint doesn't give plot,  */}
-          {/* so we show the imdbID as a reference */}
+          <p className="banner-subtitle">{featured.Year}</p>
           <p className="banner-description">
-            IMDB ID: {featured.imdbID} &nbsp;·&nbsp; Showing results for "{query}"
+            Watch the best content on Netrick. Click Play to start watching now!
           </p>
-
-          {/* Buttons */}
           <div className="banner-buttons">
-            <a href="https://net22.cc/home" className="btn-play" style={{ textDecoration: 'none' }}>▶ &nbsp;Play Now</a>
+            <a href="https://net22.cc/home" className="btn-play" style={{ textDecoration: "none" }}>
+              ▶ &nbsp;Play
+            </a>
             <button className="btn-info">ⓘ &nbsp;More Info</button>
           </div>
         </div>
+
+        <div className="banner-rating">U/A 16+</div>
       </div>
 
-      {/* ── Results Row ── */}
-      {/*
-        Pass the full 'data' array to Row.
-        Row will loop through each item with .map() and render a Card.
-      */}
-      <Row
-        title={`Search Results for "${query}" (${type === "series" ? "Series" : "Movies"})`}
-        movies={data}
-        layout="grid"
-      />
+      {/* Show only movies when Movies tab is active */}
+      {activeTab === "movies" && (
+        <Row title="🎬 Movies" items={movies} />
+      )}
+
+      {/* Show only series when TV Series tab is active */}
+      {activeTab === "series" && (
+        <Row title="📺 TV Series" items={series} />
+      )}
+
+      {/* Show both when Home tab is active */}
+      {activeTab === "home" && (
+        <div>
+          {movies.length > 0 && <Row title="🎬 Popular Movies" items={movies} />}
+          {series.length > 0 && <Row title="📺 Popular Series" items={series} />}
+        </div>
+      )}
     </div>
   );
 }

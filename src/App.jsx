@@ -2,124 +2,135 @@ import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import Home from "./Home";
 
-// ─────────────────────────────────────────────
-// App — the brain of the whole application
-// It:
-//   1. Holds all state (data, loading, error, search, type)
-//   2. Fetches data from the OMDB API
-//   3. Passes the data down to Home as props
-// ─────────────────────────────────────────────
+const POPULAR_WORDS = [
+  "action", "love", "hero", "dark", "war",
+  "king", "night", "fire", "star", "mission"
+];
+
 function App() {
-  // 'data' holds the array of movies/series returned by the API
-  const [data, setData] = useState([]);
-
-  // 'loading' is true while the API request is in progress
+  const [movies, setMovies] = useState([]);
+  const [series, setSeries] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // 'error' stores an error message if the API call fails
   const [error, setError] = useState("");
-
-  // 'search' is whatever the user typed in the search box
   const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(() => {
+    const i = Math.floor(Math.random() * POPULAR_WORDS.length);
+    return POPULAR_WORDS[i];
+  });
 
-  // 'query' is the search term that was last submitted
-  // We keep it separate so the API only fires when the button is clicked
-  const [query, setQuery] = useState("avengers");
+  // activeTab decides what the user is currently viewing
+  // "home"   → show both movies and series
+  // "movies" → show only movies
+  // "series" → show only series
+  const [activeTab, setActiveTab] = useState("home");
 
-  // 'type' is either "movie" or "series" (chosen from the dropdown)
-  const [type, setType] = useState("movie");
-
-  // ─────────────────────────────────────────────
-  // useEffect — runs whenever 'query' or 'type' changes
-  // This is where we actually talk to the API
-  // ─────────────────────────────────────────────
   useEffect(() => {
-    // Mark that we have started loading
+    fetchData(query);
+  }, [query]);
+
+  async function fetchData(searchWord) {
     setLoading(true);
-    // Clear any old errors
     setError("");
 
-    // Build the URL using the current query and type
-    const url = `https://www.omdbapi.com/?s=${query}&type=${type}&apikey=3a4aae06`;
+    const i = Math.floor(Math.random() * POPULAR_WORDS.length);
+    const secondWord = POPULAR_WORDS[i];
+    const KEY = "3a4aae06";
 
-    fetch(url)
-      .then((res) => res.json())          // Convert the response to JSON
-      .then((result) => {
-        if (result.Search) {
-          // API returned results — save them in 'data'
-          setData(result.Search);
-        } else {
-          // API returned no results (e.g. "Movie not found!")
-          setData([]);
-          setError(result.Error || "No results found.");
+    try {
+      const res1 = await fetch(`https://www.omdbapi.com/?s=${searchWord}&type=movie&apikey=${KEY}`);
+      const data1 = await res1.json();
+
+      const res2 = await fetch(`https://www.omdbapi.com/?s=${secondWord}&type=movie&apikey=${KEY}`);
+      const data2 = await res2.json();
+
+      const res3 = await fetch(`https://www.omdbapi.com/?s=${searchWord}&type=series&apikey=${KEY}`);
+      const data3 = await res3.json();
+
+      const res4 = await fetch(`https://www.omdbapi.com/?s=${secondWord}&type=series&apikey=${KEY}`);
+      const data4 = await res4.json();
+
+      const allMovies = [...(data1.Search || []), ...(data2.Search || [])];
+      const allSeries = [...(data3.Search || []), ...(data4.Search || [])];
+
+      // Remove duplicate movies
+      const seenMovieIds = [];
+      const uniqueMovies = [];
+      for (let item of allMovies) {
+        if (!seenMovieIds.includes(item.imdbID)) {
+          seenMovieIds.push(item.imdbID);
+          uniqueMovies.push(item);
         }
-        setLoading(false);                // Done loading
-      })
-      .catch(() => {
-        // Network error or something unexpected
-        setError("Something went wrong. Please try again.");
-        setLoading(false);
-      });
-  }, [query, type]); // Re-run this effect only when query or type changes
+      }
 
-  // Called when the user clicks the Search button
-  function handleSearch() {
-    const trimmed = search.trim();
-    if (trimmed === "") return;           // Do nothing for empty input
-    setQuery(trimmed);                   // Updating 'query' triggers useEffect
+      // Remove duplicate series
+      const seenSeriesIds = [];
+      const uniqueSeries = [];
+      for (let item of allSeries) {
+        if (!seenSeriesIds.includes(item.imdbID)) {
+          seenSeriesIds.push(item.imdbID);
+          uniqueSeries.push(item);
+        }
+      }
+
+      setMovies(uniqueMovies);
+      setSeries(uniqueSeries);
+
+      if (uniqueMovies.length === 0 && uniqueSeries.length === 0) {
+        setError("No results found. Try a different search!");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please check your internet.");
+    }
+
+    setLoading(false);
   }
 
-  // Allow pressing Enter key to search too
-  function handleKeyDown(e) {
-    if (e.key === "Enter") handleSearch();
+  function handleSearch() {
+    const trimmed = search.trim();
+    if (trimmed === "") return;
+    setQuery(trimmed);
+    setActiveTab("home");
+  }
+
+  function handleGoHome() {
+    const i = Math.floor(Math.random() * POPULAR_WORDS.length);
+    setQuery(POPULAR_WORDS[i]);
+    setSearch("");
+    setActiveTab("home");
+  }
+
+  function handleMoviesTab() {
+    setActiveTab("movies");
+  }
+
+  function handleSeriesTab() {
+    setActiveTab("series");
   }
 
   return (
     <div className="app-wrapper">
-      {/* Navbar — pass username as a prop (static, not from API) */}
-      <Navbar username="Prateek" />
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        onSearch={handleSearch}
+        onHome={handleGoHome}
+        onMovies={handleMoviesTab}
+        onSeries={handleSeriesTab}
+        activeTab={activeTab}
+      />
 
-      {/* Search bar sits below the navbar */}
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search movies or series..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="search-input"
-        />
-
-        {/* Type dropdown */}
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="search-select"
-        >
-          <option value="movie">Movies</option>
-          <option value="series">Series</option>
-        </select>
-
-        {/* Button click sets the query → triggers useEffect */}
-        <button onClick={handleSearch} className="search-button">
-          Search
-        </button>
-      </div>
-
-      {/* ── Conditional rendering based on state ── */}
-
-      {/* Show a loading message while fetching */}
       {loading && <p className="status-message">Loading...</p>}
-
-      {/* Show an error if something went wrong */}
       {error && !loading && <p className="status-message error">{error}</p>}
 
-      {/* Pass all the fetched data to Home so it can display it */}
-      {!loading && !error && data.length > 0 && (
-        <Home data={data} query={query} type={type} />
+      {!loading && !error && (movies.length > 0 || series.length > 0) && (
+        <Home
+          movies={movies}
+          series={series}
+          query={query}
+          activeTab={activeTab}
+        />
       )}
 
-      {/* Footer */}
       <footer className="footer">© 2024 Netrick · All rights reserved</footer>
     </div>
   );

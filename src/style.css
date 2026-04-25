@@ -1,5 +1,5 @@
 /* ===========================
-   GLOBAL RESET & BASE STYLES
+   GLOBAL RESET & BASE
    =========================== */
 * {
   margin: 0;
@@ -8,7 +8,7 @@
 }
 
 body {
-  background-color: #0a0a0a;
+  background-color: #141414;
   color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
@@ -16,7 +16,7 @@ body {
 }
 
 /* ===========================
-   NAVBAR
+   NAVBAR — matches NetMirror
    =========================== */
 .navbar {
   position: fixed;
@@ -25,135 +25,189 @@ body {
   right: 0;
   z-index: 1000;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 14px 40px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, transparent 100%);
-  transition: 0.3s ease;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent);
 }
 
 .navbar.scrolled {
   background: #111111;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
 }
 
+/* Logo — red text like NetMirror */
 .navbar-logo {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 900;
-  letter-spacing: -1px;
   color: #e50914;
+  letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  user-select: none;
+  flex-shrink: 0;
 }
 
-.navbar-logo span {
+/* Center navigation links */
+.navbar-links {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-link {
+  color: #cccccc;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
   color: #ffffff;
 }
 
+/* Right side — search + icons + avatar */
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
-.navbar-username {
-  font-size: 14px;
-  color: #cccccc;
-  font-weight: 500;
+.nav-search-input {
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  width: 180px;
+}
+
+.nav-search-input:focus {
+  border-color: #e50914;
+}
+
+.nav-search-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.nav-icon {
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .navbar-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #e50914, #b20710);
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: #e50914;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.2s ease;
-}
-
-.navbar-avatar:hover {
-  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* ===========================
-   HERO / HOME BANNER
+   TYPE FILTER BUTTONS
+   =========================== */
+.type-filter {
+  padding: 80px 40px 0;
+  display: flex;
+  gap: 12px;
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: #cccccc;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: #e50914;
+  border-color: #e50914;
+  color: #ffffff;
+}
+
+/* ===========================
+   HERO BANNER — full width
    =========================== */
 .home-banner {
   position: relative;
-  width: calc(100% - 80px);
-  margin: 80px auto 0;
+  width: 100%;
   height: 520px;
-  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  margin-top: 12px;
 }
 
 .home-banner img {
   width: 100%;
-  height: 250%;
+  height: 100%;
   object-fit: cover;
-  display: flex;
+  object-position: top center;
 }
 
+/* Left-to-right dark gradient so text is readable */
 .home-banner-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(to right,
-      rgba(0, 0, 0, 0.85) 0%,
-      rgba(0, 0, 0, 0.5) 50%,
-      rgba(0, 0, 0, 0.1) 100%);
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.5) 55%,
+      rgba(0, 0, 0, 0.05) 100%);
 }
 
+/* Text content — bottom left */
 .home-banner-content {
   position: absolute;
   bottom: 50px;
   left: 50px;
-  max-width: 500px;
+  max-width: 480px;
 }
 
-.banner-tag {
-  display: inline-block;
-  background: #e50914;
-  color: #fff;
-  font-size: 11px;
+/* "NETRICK ORIGINAL" label */
+.banner-platform {
+  color: #e50914;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 4px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
+/* Big movie title */
 .banner-title {
-  font-size: 52px;
+  font-size: 54px;
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -1px;
   margin-bottom: 8px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 .banner-subtitle {
   font-size: 14px;
   color: #aaaaaa;
-  margin-bottom: 16px;
-  letter-spacing: 0.5px;
+  margin-bottom: 12px;
 }
 
 .banner-description {
-  font-size: 15px;
+  font-size: 14px;
   color: #cccccc;
   line-height: 1.6;
-  margin-bottom: 28px;
-  max-width: 400px;
+  margin-bottom: 24px;
 }
 
 .banner-buttons {
@@ -161,79 +215,122 @@ body {
   gap: 12px;
 }
 
+/* White "Play" button */
 .btn-play {
   display: flex;
   align-items: center;
-  gap: 8px;
   background: #ffffff;
   color: #000000;
   border: none;
-  padding: 12px 28px;
-  border-radius: 8px;
+  padding: 10px 24px;
+  border-radius: 6px;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s;
 }
 
 .btn-play:hover {
-  background: #e0e0e0;
-  transform: scale(1.03);
+  background: #dddddd;
 }
 
+/* Translucent "More Info" button */
 .btn-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(109, 109, 110, 0.7);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 28px;
-  border-radius: 8px;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: all ease, transform 0.2s ease;
+  transition: background 0.2s;
 }
 
 .btn-info:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.03);
+  background: rgba(109, 109, 110, 0.9);
 }
 
-/* ===========================
-   ROW SECTIONS
-   =========================== */
+/* Rating badge — top right */
+.banner-rating {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+
+/* Right block — telegram */
+.info-right {
+  flex: 1;
+  padding: 20px 30px;
+  background: #1a1a1a;
+}
+
+.info-title-dark {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.telegram-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Blue Telegram badge */
+.telegram-badge {
+  background: #2196f3;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 6px;
+  line-height: 1.4;
+  flex-shrink: 0;
+  letter-spacing: 1px;
+}
+
+.telegram-text {
+  color: #22cc88;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+
 .row-section {
-  padding: 36px 40px 10px;
+  padding: 30px 40px 10px;
 }
 
 .row-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   color: #ffffff;
-  letter-spacing: 0.3px;
 }
 
 .row-title span {
   color: #e50914;
-  font-size: 14px;
-  margin-left: 12px;
+  font-size: 13px;
+  margin-left: 10px;
   font-weight: 500;
   cursor: pointer;
-  vertical-align: middle;
 }
 
-/* Horizontal scroll row */
+/* Horizontal scroll */
 .row-scroll {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   overflow-x: auto;
-  padding-bottom: 16px;
-  scroll-behavior: smooth;
-  -ms-overflow-style: none;
+  padding-bottom: 12px;
   scrollbar-width: none;
 }
 
@@ -241,35 +338,34 @@ body {
   display: none;
 }
 
-/* Grid row */
+/* Grid */
 .row-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
   gap: 16px;
 }
 
-/* ===========================
-   CARD
-   =========================== */
+
+/* CARD */
+
 .card {
   position: relative;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  flex-shrink: 0;
-  width: 160px;
   background: #1a1a1a;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+  width: 155px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Grid cards can stretch */
 .row-grid .card {
   width: 100%;
 }
 
 .card:hover {
-  transform: scale(1.07);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+  transform: scale(1.06);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8);
   z-index: 10;
 }
 
@@ -278,15 +374,44 @@ body {
   height: 220px;
   object-fit: cover;
   display: block;
-  transition: filter 0.3s ease;
+  transition: filter 0.2s ease;
 }
 
 .card:hover img {
-  filter: brightness(0.75);
+  filter: brightness(0.7);
+}
+
+/* Hover play icon */
+.card-hover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.15);
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .card-hover-overlay {
+  opacity: 1;
+}
+
+.play-icon-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  color: #000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .card-info {
-  padding: 10px 10px 12px;
+  padding: 10px;
 }
 
 .card-title {
@@ -304,117 +429,11 @@ body {
   color: #888888;
 }
 
-/* Progress bar on "Continue Watching" cards */
-.card-progress-bar {
-  height: 3px;
-  background: #333333;
-  border-radius: 2px;
-  margin-top: 8px;
-  overflow: hidden;
-}
-
-.card-progress-fill {
-  height: 100%;
-  background: #e50914;
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-/* Hover overlay play icon */
-.card-hover-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-.card:hover .card-hover-overlay {
-  opacity: 1;
-}
-
-.play-icon-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s ease;
-}
-
-.card:hover .play-icon-circle {
-  transform: scale(1.1);
-}
-
 /* ===========================
-   PAGE LAYOUT WRAPPER
+   APP WRAPPER
    =========================== */
 .app-wrapper {
   padding-bottom: 60px;
-}
-
-/* ===========================
-   SEARCH BAR
-   =========================== */
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 100px 40px 0;
-  /* top padding pushes it below the fixed navbar */
-  max-width: 700px;
-}
-
-.search-input {
-  flex: 1;
-  padding: 11px 16px;
-  border-radius: 8px;
-  border: 1px solid #333;
-  background: #1a1a1a;
-  color: #ffffff;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.search-input:focus {
-  border-color: #e50914;
-}
-
-.search-select {
-  padding: 11px 14px;
-  border-radius: 8px;
-  border: 1px solid #333;
-  background: #1a1a1a;
-  color: #ffffff;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
-}
-
-.search-button {
-  padding: 11px 22px;
-  border-radius: 8px;
-  border: none;
-  background: #e50914;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.search-button:hover {
-  background: #b20710;
-  transform: scale(1.03);
 }
 
 /* ===========================
@@ -436,9 +455,9 @@ body {
    =========================== */
 .footer {
   text-align: center;
-  padding: 30px 40px;
+  padding: 24px 40px;
   color: #555555;
   font-size: 12px;
-  border-top: 1px solid #1a1a1a;
+  border-top: 1px solid #222;
   margin-top: 20px;
 }
